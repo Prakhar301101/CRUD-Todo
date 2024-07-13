@@ -36,9 +36,24 @@ module.exports.getTaskById= async (req,res)=>{
 
 
 module.exports.updateTaskById= async (req,res)=>{
-  
+  const taskId=req.params.id;
+  const {updatedTask}=req.body;
+  try{
+    const taskDoc=await Task.findById(taskId);
+    taskDoc.task=updatedTask;
+    await taskDoc.save();
+    res.status(200).json("Changes saved successfully");
+  }catch(err){
+    res.status(400).json(err);
+  }
 }
 
 module.exports.deleteTaskById= async (req,res)=>{
-
+    const taskId=req.params.id;
+    try{
+        await Task.findByIdAndDelete(taskId);
+        res.status(200).json("Entry deleted!");
+      }catch(err){
+        res.status(400).json(err);
+      }
 }
