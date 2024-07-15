@@ -38,8 +38,20 @@ module.exports.registerUser=async (req,res)=>{
 // @desc    Authenticate a user
 // @route   POST /api/users/login
 // @access  Public
-module.exports.loginUser=(req,res)=>{
-    res.json({message:'Login user'});
+module.exports.loginUser= async (req,res)=>{
+    const {email,password} =req.body;
+
+    const user= await User.findOne({email});
+    if(user && ( await bcrypt.compare(password,user.password))){
+        res.status(200).json({
+            message:"User verified"
+        })
+    }else{
+        res.status(400).json({
+            message:"Invalid credentials"
+        })
+    }
+
 }
 
 
