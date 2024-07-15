@@ -1,7 +1,9 @@
-//create functions which serve as callback functions for the routes
 
 const Task=require('../models/task');
 
+// @desc    Create a new task
+// @route   POST /api/tasks
+// @access  Private
 module.exports.createTask = async (req,res)=>{
     const {username,task} =req.body;
     try{    
@@ -12,6 +14,10 @@ module.exports.createTask = async (req,res)=>{
     }
 }
 
+
+// @desc    Get all tasks
+// @route   GET /api/tasks
+// @access  Private
 module.exports.getTasks= async (req,res)=>{
     try{
         const taskData=await Task.find();
@@ -21,20 +27,10 @@ module.exports.getTasks= async (req,res)=>{
     }
 }
 
-module.exports.getTaskById= async (req,res)=>{
-    const taskId=req.params.id;
-    try{
-        const taskData=await Task.findById(taskId);
-        if (!taskData) {
-            return res.status(400).json({ message: "Task not found" });
-        }
-        res.status(200).json(taskData);
-    }catch(err){
-        res.status(400).json(err);
-    }
-}
 
-
+// @desc    update tasks
+// @route   PUT /api/tasks/:id
+// @access  Private
 module.exports.updateTaskById= async (req,res)=>{
   const taskId=req.params.id;
   const {updatedTask}=req.body;
@@ -48,6 +44,10 @@ module.exports.updateTaskById= async (req,res)=>{
   }
 }
 
+
+// @desc    delete tasks
+// @route   DELETE /api/tasks/:id
+// @access  Private
 module.exports.deleteTaskById= async (req,res)=>{
     const taskId=req.params.id;
     try{

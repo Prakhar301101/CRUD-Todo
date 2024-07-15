@@ -3,13 +3,15 @@ const express= require('express');
 const mongoose = require('mongoose');
 const app=express();
 const PORT=process.env.PORT|8000
-const crudRoutes=require('./routes/Routes');
+const userRoutes=require('./routes/userRoutes')
+const crudRoutes=require('./routes/crudRoutes');
 
 
 app.use(express.json());
 
 mongoose.connect(process.env.MONGODB_URL)
 
+app.use(userRoutes);
 app.use(crudRoutes);
 
 
