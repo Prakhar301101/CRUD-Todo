@@ -1,5 +1,5 @@
 const User=require('../models/user');
-
+const jwt=require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 
 
@@ -25,7 +25,8 @@ module.exports.registerUser=async (req,res)=>{
         res.status(200).json({
             _id:user.id,
             name:user.name,
-            email:user.email
+            email:user.email,
+            token:generateToken(user._id),
         })
     }else{
         res.status(400).json({
@@ -44,7 +45,10 @@ module.exports.loginUser= async (req,res)=>{
     const user= await User.findOne({email});
     if(user && ( await bcrypt.compare(password,user.password))){
         res.status(200).json({
-            message:"User verified"
+            _id:user.id,
+            name:user.name,
+            email:user.email,
+            token:generateToken(user._id),
         })
     }else{
         res.status(400).json({
@@ -58,14 +62,15 @@ module.exports.loginUser= async (req,res)=>{
 // @desc    Get user info
 // @route   GET /api/users/me
 // @access  Private
-module.exports.getUser=(req,res)=>{
-    res.json({message:'get user detail'});
+module.exports.getUser=async (req,res)=>{
+    const {_id, email,password} = await User.findById(req.user.id);
+    res.status(200).json({id:_id,email,password})
 }
 
 
-// @desc    Logout a User
-// @route   /api/users/logout
-// @access  Private
-module.exports.logoutUser=(req,res)=>{
-    res.json({message:'logout user'});
+//generate token
+const generateToken=(id)=>{
+   return jwt.sign({id},process.env.SECRET,{
+        expiresIn: '30d',
+    })
 }
